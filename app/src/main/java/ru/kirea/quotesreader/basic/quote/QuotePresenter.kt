@@ -5,13 +5,17 @@ import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.kirea.quotesreader.basic.BasePresenter
+import ru.kirea.quotesreader.basic.quoteshistory.QuotesHistoryScreen
 import ru.kirea.quotesreader.data.QuoteRepository
+import ru.kirea.quotesreader.data.db.repositories.QuoteDB
 import ru.kirea.quotesreader.helpers.schedules.AppSchedulers
 import java.util.concurrent.TimeUnit
 
 class QuotePresenter @AssistedInject constructor(
     router: Router,
+    private val quoteDB: QuoteDB,
     private val quoteRepository: QuoteRepository,
     private val schedulers: AppSchedulers
 ): BasePresenter<QuoteView>(router) {
@@ -47,6 +51,19 @@ class QuotePresenter @AssistedInject constructor(
         disposables += quoteRepository.getQuote()
             .observeOn(schedulers.main())
             .subscribeOn(schedulers.background()) //обработку делаем в отдельном потоке
+            .map { quote ->
+                //сохраним полученную цитату
+                quote.viewed = System.currentTimeMillis()
+                quoteDB
+                    .insert(quote)
+                    .observeOn(schedulers.main())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        {},
+                        { exception -> viewState.showException(exception) }
+                    )
+                return@map quote
+            }
             .subscribe(
                 //уведомляем view о том, что получили цитату
                 { quote ->
@@ -64,5 +81,10 @@ class QuotePresenter @AssistedInject constructor(
     //обновить цитату вручную
     fun updateQuote() {
         loadData()
+    }
+
+    //открыть историю просмотра цитат
+    fun openHistory() {
+        router.navigateTo(QuotesHistoryScreen())
     }
 }

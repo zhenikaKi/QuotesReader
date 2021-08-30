@@ -1,4 +1,4 @@
-package ru.kirea.quotesreader.data.db
+package ru.kirea.quotesreader.data.db.repositories
 
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single

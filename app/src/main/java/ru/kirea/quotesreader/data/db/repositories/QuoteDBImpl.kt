@@ -1,10 +1,11 @@
-package ru.kirea.quotesreader.data.db
+package ru.kirea.quotesreader.data.db.repositories
 
 import io.reactivex.rxjava3.core.Single
+import ru.kirea.quotesreader.data.db.StorageDB
 import ru.kirea.quotesreader.data.entities.Quote
 import javax.inject.Inject
 
-class QuoteDBImpl @Inject constructor(private val storageDB: StorageDB):  QuoteDB {
+class QuoteDBImpl @Inject constructor(private val storageDB: StorageDB): QuoteDB {
 
     //вставить цитату
     override fun insert(quote: Quote) = storageDB.quoteDao().insert(quote)
