@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="fabSubmenuStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:backgroundTint">@color/teal_200</item>
+        <item name="tint">@color/purple_700</item>
+        <item name="fabSize">mini</item>
+        <item name="layout_constraintCircleRadius">@dimen/fab_circle_radius</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="android:visibility">gone</item>
+    </style>
+</resources>
