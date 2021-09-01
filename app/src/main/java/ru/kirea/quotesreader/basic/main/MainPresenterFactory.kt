@@ -3,6 +3,6 @@ package ru.kirea.quotesreader.basic.main
 import dagger.assisted.AssistedFactory
 
 @AssistedFactory
-interface MainFactory {
+interface MainPresenterFactory {
     fun create(): MainPresenter
 }

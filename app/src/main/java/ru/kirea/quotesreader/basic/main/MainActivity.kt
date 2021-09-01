@@ -5,6 +5,7 @@ import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.androidx.AppNavigator
+import moxy.MvpView
 import moxy.ktx.moxyPresenter
 import ru.kirea.quotesreader.R
 import ru.kirea.quotesreader.basic.listeners.BackButtonListener
@@ -12,17 +13,17 @@ import ru.kirea.quotesreader.databinding.MainActivityBinding
 import ru.kirea.quotesreader.helpers.di.BaseDaggerActivity
 import javax.inject.Inject
 
-class MainActivity: BaseDaggerActivity(), MainView {
+class MainActivity: BaseDaggerActivity(), MvpView {
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
 
     @Inject
-    lateinit var mainFactory: MainFactory
+    lateinit var mainPresenterFactory: MainPresenterFactory
 
     private val binding: MainActivityBinding by viewBinding(createMethod = CreateMethod.INFLATE)
     private val navigator = AppNavigator(this, R.id.container)
-    private val presenter by moxyPresenter { mainFactory.create() }
+    private val presenter by moxyPresenter { mainPresenterFactory.create() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +42,10 @@ class MainActivity: BaseDaggerActivity(), MainView {
 
     override fun onBackPressed() {
         supportFragmentManager.fragments.forEach {
-            if (it is BackButtonListener && it.backPressed()) {
+            if (it is BackButtonListener && (it as BackButtonListener).backPressed()) {
                 return
             }
         }
-        presenter.backPressed()
+        super.onBackPressed()
     }
 }
