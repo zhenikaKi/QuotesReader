@@ -22,7 +22,7 @@
         android:id="@+id/quote_text"
         android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/quote_text_size"
+        android:textSize="@dimen/quote_text_main_size"
         android:layout_marginTop="@dimen/quote_text_margin"
         android:layout_marginStart="@dimen/quote_text_margin"
         android:layout_marginEnd="@dimen/quote_text_margin"

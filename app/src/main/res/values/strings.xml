@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Цитаты</string>
+    <string name="period_update_text">Автообновление цитат: %1$d% сек</string>
 </resources>

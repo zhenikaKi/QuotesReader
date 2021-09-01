@@ -14,7 +14,7 @@ interface QuoteDao {
     fun insert(quote: Quote): Completable
 
     //получить просмотренные цитаты
-    @Query("select * from ${StorageDB.TABLE_QUOTE}")
+    @Query("select * from ${StorageDB.TABLE_QUOTE} order by ${StorageDB.VIEWED} desc")
     fun getQuotes(): Single<List<Quote>>
 
     //удалить цитату

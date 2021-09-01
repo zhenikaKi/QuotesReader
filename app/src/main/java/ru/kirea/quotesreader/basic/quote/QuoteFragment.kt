@@ -11,6 +11,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.ktx.moxyPresenter
 import ru.kirea.quotesreader.R
 import ru.kirea.quotesreader.basic.listeners.BackButtonListener
+import ru.kirea.quotesreader.basic.setting.SettingFragment
 import ru.kirea.quotesreader.data.entities.Quote
 import ru.kirea.quotesreader.databinding.QuoteFragmentBinding
 import ru.kirea.quotesreader.extensions.hide
@@ -19,23 +20,25 @@ import ru.kirea.quotesreader.extensions.showToast
 import ru.kirea.quotesreader.helpers.di.BaseDaggerFragment
 import javax.inject.Inject
 
-class QuoteFragment: BaseDaggerFragment(), QuoteView, BackButtonListener {
+class QuoteFragment : BaseDaggerFragment(), QuoteView, BackButtonListener {
 
     @Inject
-    lateinit var quoteFactory: QuoteFactory
+    lateinit var quotePresenterFactory: QuotePresenterFactory
 
     companion object {
         fun newInstance(): Fragment = QuoteFragment()
     }
 
     private val binding: QuoteFragmentBinding by viewBinding(createMethod = CreateMethod.INFLATE)
-    private val presenter by moxyPresenter { quoteFactory.create() }
+    private val presenter by moxyPresenter { quotePresenterFactory.create() }
     private var visibleSubmenu = false
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?) =
-            binding.root
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) =
+        binding.root
 
     //проинициализировать view
     override fun init() {
@@ -80,13 +83,13 @@ class QuoteFragment: BaseDaggerFragment(), QuoteView, BackButtonListener {
 
         //нажатие по кнопке открытия истории статусов
         binding.fabHistoryQuote.setOnClickListener {
-            TODO()
+            presenter.openHistory()
             showOrHideFabMenu()
         }
 
         //нажатие по кнопке настроек
         binding.fabSetting.setOnClickListener {
-            TODO()
+            SettingFragment.show(fragmentManager = childFragmentManager)
             showOrHideFabMenu()
         }
 
