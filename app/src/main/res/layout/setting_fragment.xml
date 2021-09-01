@@ -33,7 +33,7 @@
             android:id="@+id/period_update_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:valueFrom="0"
+            android:valueFrom="15"
             android:valueTo="60"
             android:value="30"
             android:stepSize="5"

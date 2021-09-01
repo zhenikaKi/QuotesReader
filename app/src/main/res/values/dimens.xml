@@ -2,6 +2,7 @@
 <resources>
     <dimen name="quote_text_main_size">20sp</dimen>
     <dimen name="text_size">16sp</dimen>
+    <dimen name="mini_text_size">12sp</dimen>
     <dimen name="quote_author_size">14sp</dimen>
     <dimen name="quote_text_margin">40dp</dimen>
     <dimen name="quote_author_margin">10dp</dimen>

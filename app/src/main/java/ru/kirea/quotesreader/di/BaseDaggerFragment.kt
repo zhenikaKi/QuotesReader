@@ -1,6 +1,6 @@
 package ru.kirea.quotesreader.helpers.di
 
-import android.os.Bundle
+import android.content.Context
 import androidx.annotation.LayoutRes
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -17,9 +17,9 @@ abstract class BaseDaggerFragment(@LayoutRes contentLayoutId: Int = 0):
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
-        super.onCreate(savedInstanceState)
+        super.onAttach(context)
     }
 
     override fun androidInjector(): AndroidInjector<Any> = androidInjector
