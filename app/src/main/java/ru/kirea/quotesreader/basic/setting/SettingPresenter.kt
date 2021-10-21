@@ -7,23 +7,40 @@ import ru.kirea.quotesreader.basic.BasePresenter
 import ru.kirea.quotesreader.data.db.StorageDB
 import ru.kirea.quotesreader.data.db.repositories.SettingDB
 import ru.kirea.quotesreader.data.entities.Setting
+import ru.kirea.quotesreader.data.events.BaseHandler
+import ru.kirea.quotesreader.data.events.UpdatePeriodEvent
 import ru.kirea.quotesreader.helpers.schedules.AppSchedulers
 
 class SettingPresenter @AssistedInject constructor(
     router: Router,
     private val settingDB: SettingDB,
-    private val schedulers: AppSchedulers
+    private val schedulers: AppSchedulers,
+    private val baseHandler: BaseHandler,
 ): BasePresenter<SettingView>(router) {
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        //загружаем цитату
+    override fun attachView(view: SettingView?) {
+        super.attachView(view)
+        viewState.init()
+        //загружаем настройки
         loadData()
     }
 
     //сохранить новый период автообновления
     fun savePeriodUpdate(value: Int) {
-        //TODO сохранить новое значение
+        disposables += settingDB.save(Setting(StorageDB.PARAM_PERIOD_UPDATE, value = value.toString()))
+            .observeOn(schedulers.main())
+            .subscribeOn(schedulers.background())
+            .subscribe(
+                //уведомляем слушателей о том, что изменился период автообновления
+                {
+                     baseHandler.send(UpdatePeriodEvent(value))
+                },
+
+                { exception ->
+                    viewState.endLoadData()
+                    viewState.showException(exception)
+                }
+            )
     }
 
     private fun loadData() {

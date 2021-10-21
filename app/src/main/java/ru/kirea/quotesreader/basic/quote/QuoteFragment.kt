@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
-import by.kirich1409.viewbindingdelegate.CreateMethod
-import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.ktx.moxyPresenter
 import ru.kirea.quotesreader.R
 import ru.kirea.quotesreader.basic.listeners.BackButtonListener
@@ -29,7 +27,7 @@ class QuoteFragment : BaseDaggerFragment(), QuoteView, BackButtonListener {
         fun newInstance(): Fragment = QuoteFragment()
     }
 
-    private val binding: QuoteFragmentBinding by viewBinding(createMethod = CreateMethod.INFLATE)
+    private lateinit var binding: QuoteFragmentBinding
     private val presenter by moxyPresenter { quotePresenterFactory.create() }
     private var visibleSubmenu = false
 
@@ -37,8 +35,10 @@ class QuoteFragment : BaseDaggerFragment(), QuoteView, BackButtonListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) =
-        binding.root
+    ): View {
+        binding = QuoteFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     //проинициализировать view
     override fun init() {
@@ -67,6 +67,12 @@ class QuoteFragment : BaseDaggerFragment(), QuoteView, BackButtonListener {
 
         binding.quoteText.show()
         binding.quoteAuthor.show()
+    }
+
+    //показать время до следующего обновления
+    override fun showReverseTimer(value: Int) {
+        val text = String.format(getString(R.string.reverse_timer_text), value)
+        binding.reverseTimerText.text = text
     }
 
     //показать возникшую ошибку

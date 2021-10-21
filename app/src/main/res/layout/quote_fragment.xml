@@ -17,6 +17,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- остаток таймера до обновления -->
+    <TextView
+        android:id="@+id/reverse_timer_text"
+        android:layout_width="@dimen/zero"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/mini_text_size"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <!-- полученная цитата -->
     <TextView
         android:id="@+id/quote_text"

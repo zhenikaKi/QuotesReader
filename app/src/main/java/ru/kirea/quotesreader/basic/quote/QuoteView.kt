@@ -19,4 +19,7 @@ interface QuoteView: MvpView, ExceptionView {
 
     //показать полученную цитату
     fun showQuote(quote: Quote)
+
+    //показать остаток времени до обновления
+    fun showReverseTimer(value: Int)
 }

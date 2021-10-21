@@ -8,10 +8,7 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import ru.kirea.quotesreader.App
-import ru.kirea.quotesreader.di.modules.ApiModule
-import ru.kirea.quotesreader.di.modules.DBModule
-import ru.kirea.quotesreader.di.modules.DataModule
-import ru.kirea.quotesreader.di.modules.UIModule
+import ru.kirea.quotesreader.di.modules.*
 import ru.kirea.quotesreader.helpers.schedules.AppSchedulers
 import javax.inject.Singleton
 
@@ -21,7 +18,8 @@ import javax.inject.Singleton
     ApiModule::class,
     UIModule::class,
     DataModule::class,
-    DBModule::class])
+    DBModule::class,
+    EventsModule::class])
 interface AppComponent: AndroidInjector<App> {
 
     @Component.Builder

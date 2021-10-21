@@ -9,41 +9,62 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.kirea.quotesreader.basic.BasePresenter
 import ru.kirea.quotesreader.basic.quoteshistory.QuotesHistoryScreen
 import ru.kirea.quotesreader.data.QuoteRepository
+import ru.kirea.quotesreader.data.db.StorageDB
 import ru.kirea.quotesreader.data.db.repositories.QuoteDB
+import ru.kirea.quotesreader.data.db.repositories.SettingDB
+import ru.kirea.quotesreader.data.events.BaseHandler
+import ru.kirea.quotesreader.data.events.UpdatePeriodEvent
 import ru.kirea.quotesreader.helpers.schedules.AppSchedulers
 import java.util.concurrent.TimeUnit
 
 class QuotePresenter @AssistedInject constructor(
     router: Router,
     private val quoteDB: QuoteDB,
+    private val settingDB: SettingDB,
     private val quoteRepository: QuoteRepository,
-    private val schedulers: AppSchedulers
+    private val schedulers: AppSchedulers,
+    private val baseHandler: BaseHandler
 ): BasePresenter<QuoteView>(router) {
 
-    //таймер для автообновления
+    //таймер для автообновления и время автообновления
     private val timer = CompositeDisposable()
-
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.init()
-        //загружаем цитату
-        loadData()
-    }
+    private var periodUpdate = StorageDB.PERIOD_UPDATE_DEFAULT
+    private var reverseTimerValue = StorageDB.PERIOD_UPDATE_DEFAULT
 
     override fun attachView(view: QuoteView?) {
         super.attachView(view)
+        viewState.init()
+
+        //подписываемся на изменения периода обновлеия цитат
+        disposables += baseHandler.addHandler(UpdatePeriodEvent::class) { updatePeriodEvent ->
+            periodUpdate  = updatePeriodEvent.newPeriod
+            reverseTimerValue = periodUpdate
+        }
+
+        //загружаем цитату
+        loadData()
+
+        //получаем время обновления таймера
+        loadPeriodUpdate()
 
         //запускаем таймер для обновления цитат
-        timer += Observable.interval(30, 30, TimeUnit.SECONDS)
-            .subscribeOn(schedulers.background())
-            .observeOn(schedulers.main())
-            .subscribe{ loadData() }
-
+        initTimer()
     }
 
     override fun detachView(view: QuoteView?) {
         super.detachView(view)
         timer.clear()
+    }
+
+    //обновить цитату вручную
+    fun updateQuote() {
+        reverseTimerValue = periodUpdate
+        loadData()
+    }
+
+    //открыть историю просмотра цитат
+    fun openHistory() {
+        router.navigateTo(QuotesHistoryScreen())
     }
 
     private fun loadData() {
@@ -78,13 +99,44 @@ class QuotePresenter @AssistedInject constructor(
             )
     }
 
-    //обновить цитату вручную
-    fun updateQuote() {
-        loadData()
+    //получить время обовления таймера
+    private fun loadPeriodUpdate() {
+        disposables += settingDB.getSetting(StorageDB.PARAM_PERIOD_UPDATE)
+            .observeOn(schedulers.main())
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                { setting ->
+                    setting?.let {
+                        periodUpdate = it.value.toInt()
+                        initTimer()
+                    } ?: StorageDB.PERIOD_UPDATE_DEFAULT
+                    reverseTimerValue = periodUpdate
+                },
+
+                //при ошибках задаем период по умолчанию
+                {
+                    periodUpdate = StorageDB.PERIOD_UPDATE_DEFAULT
+                    reverseTimerValue = periodUpdate
+                }
+            )
     }
 
-    //открыть историю просмотра цитат
-    fun openHistory() {
-        router.navigateTo(QuotesHistoryScreen())
+    //запустить таймер
+    private fun initTimer() {
+        timer.clear()
+        timer += Observable.interval(1, 1, TimeUnit.SECONDS)
+            .subscribeOn(schedulers.background())
+            .observeOn(schedulers.main())
+            .subscribe{ processTimer() }
+    }
+
+    //обработать тик таймера
+    private fun processTimer() {
+        --reverseTimerValue
+        if (reverseTimerValue == 0) {
+            reverseTimerValue = periodUpdate
+            loadData()
+        }
+        viewState.showReverseTimer(reverseTimerValue)
     }
 }
