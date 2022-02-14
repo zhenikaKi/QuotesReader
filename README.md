@@ -15,6 +15,7 @@
 
 ### Стек технологий
 - Kotlin
+- LiveData, ViewModel
 - Moxy
 - Cicerone
 - RxJava
