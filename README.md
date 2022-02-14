@@ -10,3 +10,15 @@
 
 ### Уроки
 - ***Урок 07.*** Тестирование Фрагментов и списков
+
+---
+
+### Стек технологий
+- Kotlin
+- Moxy
+- Cicerone
+- RxJava
+- Retrofit
+- Glide
+- Room
+- Dagger 2
