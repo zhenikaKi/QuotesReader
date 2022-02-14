@@ -39,6 +39,7 @@ class QuotePresenter @AssistedInject constructor(
         disposables += baseHandler.addHandler(UpdatePeriodEvent::class) { updatePeriodEvent ->
             periodUpdate  = updatePeriodEvent.newPeriod
             reverseTimerValue = periodUpdate
+            viewState.showReverseTimer(reverseTimerValue)
         }
 
         //загружаем цитату
@@ -59,6 +60,7 @@ class QuotePresenter @AssistedInject constructor(
     //обновить цитату вручную
     fun updateQuote() {
         reverseTimerValue = periodUpdate
+        viewState.showReverseTimer(reverseTimerValue)
         loadData()
     }
 

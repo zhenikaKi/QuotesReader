@@ -18,6 +18,7 @@ import javax.inject.Singleton
     ApiModule::class,
     UIModule::class,
     DataModule::class,
+    QuoteRepositoryModule::class,
     DBModule::class,
     EventsModule::class])
 interface AppComponent: AndroidInjector<App> {

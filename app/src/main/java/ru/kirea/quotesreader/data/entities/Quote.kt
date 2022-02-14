@@ -30,7 +30,7 @@ data class Quote(
 
     @SerializedName("quoteLink")
     @ColumnInfo(name = StorageDB.QUOTE_LINK)
-    val quoteLink: String,
+    val quoteLink: String? = null,
 
     @ColumnInfo(name = StorageDB.VIEWED)
     var viewed: Long = System.currentTimeMillis()
